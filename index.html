@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Work apps</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1b1f24; --muted:#5f6b78; --line:#e2e6ea; --accent:#0b6bcb; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171b; --card:#1d2126; --ink:#e8ebee; --muted:#9aa5b1; --line:#2c3238; --accent:#5aa9f5; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:32px 20px 48px; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  .sub { color:var(--muted); margin:0 0 20px; font-size:.95rem; }
+  input { width:100%; padding:10px 12px; font:inherit; border:1px solid var(--line);
+          border-radius:8px; background:var(--card); color:var(--ink); margin-bottom:20px; }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(320px,1fr)); }
+  a.card { display:block; padding:16px; background:var(--card); border:1px solid var(--line);
+           border-radius:10px; color:inherit; text-decoration:none; }
+  a.card:hover, a.card:focus { border-color:var(--accent); outline:none; }
+  .name { font-weight:600; color:var(--accent); }
+  .desc { color:var(--muted); font-size:.92rem; margin-top:4px; }
+  .note { font-size:.8rem; color:var(--muted); margin-top:8px; }
+  .empty { color:var(--muted); display:none; }
+  footer { margin-top:32px; font-size:.8rem; color:var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Work apps</h1>
+  <p class="sub">Ophthalmology tools. Patient data stays on the device you use them on.</p>
+  <input id="q" type="search" placeholder="Filter… (press / to focus)" autocomplete="off" aria-label="Filter apps">
+  <div class="grid" id="list"></div>
+  <p class="empty" id="empty">No matches.</p>
+  <footer>To add an app, edit the JSON list in this repo's <code>index.html</code>.</footer>
+</main>
+
+<!-- ===== Edit this list to add/remove apps ===== -->
+<script id="apps" type="application/json">
+[
+  {
+    "name": "Theatre List Prepper",
+    "url": "https://result6393.github.io/Theatre-list-prepper-v2/",
+    "desc": "Turns a day's SurgiNet run sheet into rows for a list's consultant cheat sheet, ready to paste into Excel."
+  },
+  {
+    "name": "SSEH Orders",
+    "url": "https://result6393.github.io/SSEH-high-value-lens-order-maker/",
+    "desc": "Phone app: photo of biometry printout → toric IOL / Tutoplast / iStent approval email for the lens coordinators."
+  },
+  {
+    "name": "Deidentifier",
+    "url": "https://result6393.github.io/Deidentifier/",
+    "desc": "Covers patient identifiers on photos of notes, Optos, OCT and EMR screens, on-device, for case presentations."
+  },
+  {
+    "name": "Anti-VEGF interval tracker",
+    "url": "https://claude.ai/artifact/HChHKufEUBVDKPEvkGWi7z",
+    "desc": "Tracks RE/LE injection intervals, projects next injections and suggests review dates."
+  },
+  {
+    "name": "Optos DCM → JPEG converter",
+    "url": "https://github.com/Result6393/Optos-DCM-to-jpeg-converter",
+    "desc": "Converts Optos DICOM exports to JPEG.",
+    "note": "Private repo: GitHub sign-in required."
+  }
+]
+</script>
+
+<script>
+(function () {
+  var apps = JSON.parse(document.getElementById('apps').textContent);
+  var list = document.getElementById('list'), q = document.getElementById('q'), empty = document.getElementById('empty');
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text) e.textContent = text; return e; }
+  function render(filter) {
+    list.textContent = '';
+    var f = (filter || '').toLowerCase(), shown = 0;
+    apps.forEach(function (a) {
+      if (f && (a.name + ' ' + a.desc).toLowerCase().indexOf(f) === -1) return;
+      var c = el('a', 'card'); c.href = a.url;
+      c.appendChild(el('div', 'name', a.name));
+      c.appendChild(el('div', 'desc', a.desc));
+      if (a.note) c.appendChild(el('div', 'note', a.note));
+      list.appendChild(c); shown++;
+    });
+    empty.style.display = shown ? 'none' : 'block';
+  }
+  q.addEventListener('input', function () { render(q.value); });
+  q.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { var first = list.querySelector('a'); if (first) location.href = first.href; }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+  });
+  render('');
+})();
+</script>
+</body>
+</html>
