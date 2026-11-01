@@ -10,8 +10,7 @@
   "kv_namespaces": [
     {
       "binding": "SETTINGS",
-      // Replace with the ID of the "work-settings" KV namespace from the Cloudflare dashboard.
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
+      "id": "a458e380b8e442c8a38550eba67164d9"
     }
   ]
   // Secret (set in the dashboard, never committed): AUTH_HASH — produced by https://result6393.github.io/settings/setup.html
